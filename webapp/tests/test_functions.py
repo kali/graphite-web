@@ -308,18 +308,36 @@ class FunctionsTest(TestCase):
         results = functions.mapSeries({}, copy.deepcopy(seriesList), 1)
         self.assertEqual(results,expectedResult)
 
-    def test_reduceSeries(self):
+#    def test_reduceSeries(self):
+#        sl, inputList = self._generate_mr_series()
+#        expectedResult   = [
+#            TimeSeries('group.server1.reduce.mock',0,1,1,[None]),
+#            TimeSeries('group.server2.reduce.mock',0,1,1,[None])
+#        ]
+#        resultSeriesList = [TimeSeries('mock(series)',0,1,1,[None])]
+#        mock = MagicMock(return_value = resultSeriesList)
+#        with patch.dict(functions.SeriesFunctions,{ 'mock': mock }):
+#            results = functions.reduceSeries({}, copy.deepcopy(inputList), "mock", 2, "metric1","metric2" )
+#            self.assertEqual(results,expectedResult)
+#        self.assertEqual(mock.mock_calls, [call({},*inputList[0]), call({},*inputList[1])])
+
+    def test_reduceSeriesWithAsPercent(self):
         sl, inputList = self._generate_mr_series()
         expectedResult   = [
             TimeSeries('group.server1.reduce.mock',0,1,1,[None]),
             TimeSeries('group.server2.reduce.mock',0,1,1,[None])
         ]
-        resultSeriesList = [TimeSeries('mock(series)',0,1,1,[None])]
-        mock = MagicMock(return_value = resultSeriesList)
-        with patch.dict(functions.SeriesFunctions,{ 'mock': mock }):
-            results = functions.reduceSeries({}, copy.deepcopy(inputList), "mock", 2, "metric1","metric2" )
-            self.assertEqual(results,expectedResult)
-        self.assertEqual(mock.mock_calls, [call({},inputList[0]), call({},inputList[1])])
+        results = functions.reduceSeries({}, copy.deepcopy(inputList), "asPercent", 2, "metric1","metric2" )
+        self.assertEqual(results,expectedResult)
+
+    def test_reduceSeriesWithDivide(self):
+        sl, inputList = self._generate_mr_series()
+        expectedResult   = [
+            TimeSeries('group.server1.reduce.mock',0,1,1,[None]),
+            TimeSeries('group.server2.reduce.mock',0,1,1,[None])
+        ]
+        results = functions.reduceSeries({}, copy.deepcopy(inputList), "divideSeries", 2, "metric1","metric2" )
+        self.assertEqual(results,expectedResult)
 
     def test_pow(self):
         seriesList = self._generate_series_list()
